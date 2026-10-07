@@ -1,972 +1,1371 @@
 {
-  "info": {
-    "_postman_id": "68ff5694-801d-438e-bebf-7c3ffff658ab",
-    "name": "New Collection",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "57563309"
-  },
-  "item": [
-    {
-      "name": "01 Users",
-      "item": [
-        {
-          "name": "Create User First G",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  ""
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"first_name\": \"G\",\r\n    \"last_name\": \"A\",\r\n    \"email\": \"ga@example.com\",\r\n    \"phone\": \"9876543210\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/users/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "users",
-                ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create User Second T",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const response = pm.response.json();\r\n\r\npm.environment.set(\"test_user_id\", response.id);\r\n\r\nconsole.log(\"test_user_id\", response.id);"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"first_name\": \"Test\",\r\n    \"last_name\": \"User\",\r\n    \"email\": \"testuser@example.com\",\r\n    \"phone\": \"9876543211\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/users/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "users",
-                ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "List all Users",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/users/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "users",
-                ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get First User",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/users/{{user_id}}/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "users",
-                "{{user_id}}",
-                ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Second User",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/users/{{test_user_id}}/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "users",
-                "{{test_user_id}}",
-                ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Test Validation",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"first_name\": \"Invalid\",\r\n    \"last_name\": \"User\",\r\n    \"email\": \"invalid-email\",\r\n    \"phone\": \"9876543212\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/users/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "users",
-                ""
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
+    "info": {
+        "_postman_id": "68ff5694-801d-438e-bebf-7c3ffff658ab",
+        "name": "New Collection",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "57563309"
     },
-    {
-      "name": "02 Workspaces",
-      "item": [
+    "item": [
         {
-          "name": "Create Workspace",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const response = pm.response.json();\r\n\r\npm.environment.set(\"workspace_id\", response.id);\r\n\r\nconsole.log(\"workspace_id:\", response.id);"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"name\": \"CollabDocs Development\",\r\n    \"owner\": \"{{user_id}}\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/workspaces/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "workspaces",
-                ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "List Workspaces",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/workspaces/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "workspaces",
-                ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Workspace Members",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/workspaces/{{workspace_id}}/members/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "workspaces",
-                "{{workspace_id}}",
-                "members",
-                ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Add Member",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const response = pm.response.json();\r\n\r\npm.environment.set(\"member_id\", response.id);\r\n\r\nconsole.log(\"member_id:\", response.id);"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"user\": \"{{test_user_id}}\",\r\n    \"role\": \"editor\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/workspaces/{{workspace_id}}/members/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "workspaces",
-                "{{workspace_id}}",
-                "members",
-                ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Workspace Summary",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/workspaces/{{workspace_id}}/summary/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "workspaces",
-                "{{workspace_id}}",
-                "summary",
-                ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Workspace",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "X-User-ID",
-                "value": "{{user_id}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/workspaces/{{workspace_id}}/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "workspaces",
-                "{{workspace_id}}",
-                ""
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "03 Documents",
-      "item": [
-        {
-          "name": "Create Document",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const response = pm.response.json();\r\n\r\npm.environment.set(\"document_id\", response.id);\r\n\r\nconsole.log(\"document_id:\", response.id);"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"title\": \"CollabDocs API Design\",\r\n    \"content\": \"Initial version of the CollabDocs API design.\",\r\n    \"workspace\": \"{{workspace_id}}\",\r\n    \"created_by\": \"{{user_id}}\",\r\n    \"status\": \"draft\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/documents/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "documents",
-                ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "List Documents",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/documents/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "documents",
-                ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Document",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/documents/{{document_id}}/versions/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "documents",
-                "{{document_id}}",
-                "versions",
-                ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update Document",
-          "request": {
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"title\": \"CollabDocs API Design - Updated\",\r\n    \"content\": \"This is the second version of the CollabDocs API design.\",\r\n    \"workspace\": \"{{workspace_id}}\",\r\n    \"created_by\": \"{{user_id}}\",\r\n    \"status\": \"published\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/documents/{{document_id}}/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "documents",
-                "{{document_id}}",
-                ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Document Versions",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/documents/{{document_id}}/versions/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "documents",
-                "{{document_id}}",
-                "versions",
-                ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Document Stats",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/documents/{{document_id}}/stats/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "documents",
-                "{{document_id}}",
-                "stats",
-                ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Search Documents",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": ""
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Filter by Status",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/documents/?status=published",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "documents",
-                ""
-              ],
-              "query": [
+            "name": "01 Users",
+            "item": [
                 {
-                  "key": "status",
-                  "value": "published"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Filter by Date",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": ""
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Add Tags",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": ""
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Filter by Tags",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": ""
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Filter by Workspace",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/documents/?workspace={{workspace_id}}",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "documents",
-                ""
-              ],
-              "query": [
+                    "name": "Create User First G",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "const response = pm.response.json();",
+                                    "if (response.id) {",
+                                    "    pm.collectionVariables.set(\"user_id\", response.id);",
+                                    "    pm.environment.set(\"user_id\", response.id);",
+                                    "    console.log(\"user_id set:\", response.id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"first_name\": \"G\",\r\n    \"last_name\": \"A\",\r\n    \"email\": \"ga@example.com\",\r\n    \"phone\": \"9876543210\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/users/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "users",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
                 {
-                  "key": "workspace",
-                  "value": "{{workspace_id}}"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Document-Tag",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "X-User-ID",
-                "value": "{{user_id}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"tag_ids\": [\r\n        \"{{tag_id}}\"\r\n    ]\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/documents/{{document_id}}/tags/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "documents",
-                "{{document_id}}",
-                "tags",
-                ""
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "04 Comments",
-      "item": [
-        {
-          "name": "Create Comment",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const response = pm.response.json();\r\n\r\npm.environment.set(\"comment_id\", response.id);\r\n\r\nconsole.log(\"comment_id\", response.id);"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "X-User-ID",
-                "value": " {{user_id}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"document\": \"{{document_id}}\",\r\n    \"content\": \"Please add a Swagger example.\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/comments/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "comments",
-                ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "List Comments",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "X-User-ID",
-                "value": "{{user_id}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/comments/?document={{document_id}}",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "comments",
-                ""
-              ],
-              "query": [
+                    "name": "Create User Second T",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "const response = pm.response.json();\r\n\r\npm.environment.set(\"test_user_id\", response.id);\r\n\r\nconsole.log(\"test_user_id\", response.id);",
+                                    "const response = pm.response.json();\r\n\r\npm.collectionVariables.set(\"test_user_id\", response.id);\r\n\r\nconsole.log(\"test_user_id\", response.id);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"first_name\": \"Test\",\r\n    \"last_name\": \"User\",\r\n    \"email\": \"testuser@example.com\",\r\n    \"phone\": \"9876543211\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/users/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "users",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
                 {
-                  "key": "document",
-                  "value": "{{document_id}}"
+                    "name": "List all Users",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/users/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "users",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get First User",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/users/{{user_id}}/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "users",
+                                "{{user_id}}",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Second User",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/users/{{test_user_id}}/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "users",
+                                "{{test_user_id}}",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Test Validation",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"first_name\": \"Invalid\",\r\n    \"last_name\": \"User\",\r\n    \"email\": \"invalid-email\",\r\n    \"phone\": \"9876543212\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/users/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "users",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
                 }
-              ]
-            }
-          },
-          "response": []
+            ]
         },
         {
-          "name": "Create Reply",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const response = pm.response.json();\r\n\r\npm.environment.set(\"reply_id\", response.id);\r\n\r\nconsole.log(\"reply_id\", response.id);"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "X-User-ID",
-                "value": "{{user_id}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"document\": \"{{document_id}}\",\r\n    \"content\": \"I will add it.\",\r\n    \"parent\": \"{{comment_id}}\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
+            "name": "02 Workspaces",
+            "item": [
+                {
+                    "name": "Create Workspace",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "const response = pm.response.json();\r\n\r\npm.environment.set(\"workspace_id\", response.id);\r\n\r\nconsole.log(\"workspace_id:\", response.id);",
+                                    "const response = pm.response.json();\r\n\r\npm.collectionVariables.set(\"workspace_id\", response.id);\r\n\r\nconsole.log(\"workspace_id:\", response.id);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"name\": \"CollabDocs Development\",\r\n    \"owner\": \"{{user_id}}\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/workspaces/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "workspaces",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "List Workspaces",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/workspaces/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "workspaces",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Workspace Members",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/workspaces/{{workspace_id}}/members/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "workspaces",
+                                "{{workspace_id}}",
+                                "members",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Add Member",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "const response = pm.response.json();\r\n\r\npm.environment.set(\"member_id\", response.id);\r\n\r\nconsole.log(\"member_id:\", response.id);",
+                                    "const response = pm.response.json();\r\n\r\npm.collectionVariables.set(\"member_id\", response.id);\r\n\r\nconsole.log(\"member_id:\", response.id);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"user\": \"{{test_user_id}}\",\r\n    \"role\": \"editor\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/workspaces/{{workspace_id}}/members/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "workspaces",
+                                "{{workspace_id}}",
+                                "members",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Workspace Summary",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/workspaces/{{workspace_id}}/summary/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "workspaces",
+                                "{{workspace_id}}",
+                                "summary",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Workspace",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/workspaces/{{workspace_id}}/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "workspaces",
+                                "{{workspace_id}}",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
                 }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/comments/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "comments",
-                ""
-              ]
-            }
-          },
-          "response": []
+            ]
         },
         {
-          "name": "Invalid Cross-Document Reply",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": ""
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "05 Tags",
-      "item": [
-        {
-          "name": "Create Tag",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const response = pm.response.json();\r\n\r\npm.environment.set(\"tag_id\", response.id);\r\n\r\nconsole.log(\"tag_id:\", response.id);"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"name\": \"collabdocs-demo-20261006\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
+            "name": "03 Documents",
+            "item": [
+                {
+                    "name": "Create Document",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "const response = pm.response.json();\r\n\r\npm.environment.set(\"document_id\", response.id);\r\n\r\nconsole.log(\"document_id:\", response.id);",
+                                    "const response = pm.response.json();\r\n\r\npm.collectionVariables.set(\"document_id\", response.id);\r\n\r\nconsole.log(\"document_id:\", response.id);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"title\": \"CollabDocs API Design\",\r\n    \"content\": \"Initial version of the CollabDocs API design.\",\r\n    \"workspace\": \"{{workspace_id}}\",\r\n    \"created_by\": \"{{user_id}}\",\r\n    \"status\": \"draft\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/documents/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "documents",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "List Documents",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/documents/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "documents",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Document",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/documents/{{document_id}}/versions/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "documents",
+                                "{{document_id}}",
+                                "versions",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Document",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"title\": \"CollabDocs API Design - Updated\",\r\n    \"content\": \"This is the second version of the CollabDocs API design.\",\r\n    \"workspace\": \"{{workspace_id}}\",\r\n    \"created_by\": \"{{user_id}}\",\r\n    \"status\": \"published\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/documents/{{document_id}}/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "documents",
+                                "{{document_id}}",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Document Versions",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/documents/{{document_id}}/versions/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "documents",
+                                "{{document_id}}",
+                                "versions",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Document Stats",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/documents/{{document_id}}/stats/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "documents",
+                                "{{document_id}}",
+                                "stats",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Search Documents",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/documents/?search=Collab",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "documents",
+                                ""
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "Collab"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Filter by Status",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/documents/?status=published",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "documents",
+                                ""
+                            ],
+                            "query": [
+                                {
+                                    "key": "status",
+                                    "value": "published"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Filter by Date",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/documents/?updated_after=2026-01-01T00:00:00Z",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "documents",
+                                ""
+                            ],
+                            "query": [
+                                {
+                                    "key": "updated_after",
+                                    "value": "2026-01-01T00:00:00Z"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Add Tags",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/documents/{{document_id}}/tags/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "documents",
+                                "{{document_id}}",
+                                "tags",
+                                ""
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"tag_ids\": [\"{{tag_id}}\"]\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Filter by Tags",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/documents/?tags=backend,python",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "documents",
+                                ""
+                            ],
+                            "query": [
+                                {
+                                    "key": "tags",
+                                    "value": "backend,python"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Filter by Workspace",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/documents/?workspace={{workspace_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "documents",
+                                ""
+                            ],
+                            "query": [
+                                {
+                                    "key": "workspace",
+                                    "value": "{{workspace_id}}"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Document-Tag",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"tag_ids\": [\r\n        \"{{tag_id}}\"\r\n    ]\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/documents/{{document_id}}/tags/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "documents",
+                                "{{document_id}}",
+                                "tags",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
                 }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/tags/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "tags",
-                ""
-              ]
-            }
-          },
-          "response": []
+            ]
         },
         {
-          "name": "Create Second Tag",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const response = pm.response.json();\r\n\r\npm.environment.set(\"tag2_id\", response.id);\r\n\r\nconsole.log(\"tag2_id:\", response.id);"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"name\": \"postman-testing\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
+            "name": "04 Comments",
+            "item": [
+                {
+                    "name": "Create Comment",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "const response = pm.response.json();\r\n\r\npm.environment.set(\"comment_id\", response.id);\r\n\r\nconsole.log(\"comment_id\", response.id);",
+                                    "const response = pm.response.json();\r\n\r\npm.collectionVariables.set(\"comment_id\", response.id);\r\n\r\nconsole.log(\"comment_id\", response.id);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": " {{user_id}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"document\": \"{{document_id}}\",\r\n    \"content\": \"Please add a Swagger example.\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/comments/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "comments",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "List Comments",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/comments/?document={{document_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "comments",
+                                ""
+                            ],
+                            "query": [
+                                {
+                                    "key": "document",
+                                    "value": "{{document_id}}"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Reply",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "const response = pm.response.json();\r\n\r\npm.environment.set(\"reply_id\", response.id);\r\n\r\nconsole.log(\"reply_id\", response.id);",
+                                    "const response = pm.response.json();\r\n\r\npm.collectionVariables.set(\"reply_id\", response.id);\r\n\r\nconsole.log(\"reply_id\", response.id);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"document\": \"{{document_id}}\",\r\n    \"content\": \"I will add it.\",\r\n    \"parent\": \"{{comment_id}}\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/comments/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "comments",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Invalid Cross-Document Reply",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/comments/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "comments",
+                                ""
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"document\": \"{{document_id}}\",\n    \"content\": \"Invalid cross-document reply\",\n    \"parent\": \"00000000-0000-0000-0000-000000000000\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
                 }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/tags/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "tags",
-                ""
-              ]
-            }
-          },
-          "response": []
+            ]
         },
         {
-          "name": "Duplicate Tag",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"name\": \"postman-testing\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
+            "name": "05 Tags",
+            "item": [
+                {
+                    "name": "Create Tag",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "const response = pm.response.json();\r\n\r\npm.environment.set(\"tag_id\", response.id);\r\n\r\nconsole.log(\"tag_id:\", response.id);",
+                                    "const response = pm.response.json();\r\n\r\npm.collectionVariables.set(\"tag_id\", response.id);\r\n\r\nconsole.log(\"tag_id:\", response.id);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"name\": \"collabdocs-demo-20261006\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/tags/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "tags",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Second Tag",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "const response = pm.response.json();\r\n\r\npm.environment.set(\"tag2_id\", response.id);\r\n\r\nconsole.log(\"tag2_id:\", response.id);",
+                                    "const response = pm.response.json();\r\n\r\npm.collectionVariables.set(\"tag2_id\", response.id);\r\n\r\nconsole.log(\"tag2_id:\", response.id);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"name\": \"postman-testing\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/tags/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "tags",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Duplicate Tag",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"name\": \"postman-testing\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/tags/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "tags",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
                 }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/tags/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "tags",
-                ""
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "06 Audit Logs",
-      "item": [
-        {
-          "name": "List Audit Logs",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/audit-logs/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "audit-logs",
-                ""
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "07 Error Testing",
-      "item": [
-        {
-          "name": "Invalid UUID",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/users/00000000-0000-0000-0000-000000000000/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "users",
-                "00000000-0000-0000-0000-000000000000",
-                ""
-              ]
-            }
-          },
-          "response": []
+            ]
         },
         {
-          "name": "Missing Resource",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": ""
-            }
-          },
-          "response": []
+            "name": "06 Audit Logs",
+            "item": [
+                {
+                    "name": "List Audit Logs",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/audit-logs/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "audit-logs",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
         },
         {
-          "name": "Invalid Document Data",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"title\": \"   \",\r\n    \"content\": \"Some content\",\r\n    \"workspace\": \"{{workspace_id}}\",\r\n    \"created_by\": \"{{user_id}}\",\r\n    \"status\": \"draft\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
+            "name": "07 Error Testing",
+            "item": [
+                {
+                    "name": "Invalid UUID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/users/00000000-0000-0000-0000-000000000000/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "00000000-0000-0000-0000-000000000000",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Missing Resource",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/documents/00000000-0000-0000-0000-000000000000/stats/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "documents",
+                                "00000000-0000-0000-0000-000000000000",
+                                "stats",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Invalid Document Data",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"title\": \"   \",\r\n    \"content\": \"Some content\",\r\n    \"workspace\": \"{{workspace_id}}\",\r\n    \"created_by\": \"{{user_id}}\",\r\n    \"status\": \"draft\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/documents/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "documents",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
                 }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/api/documents/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "documents",
-                ""
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "08 Transaction Testing",
-      "item": [
+            ]
+        },
         {
-          "name": "Atomic Rollback Demo",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": ""
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Tests",
-      "item": [
+            "name": "08 Transaction Testing",
+            "item": [
+                {
+                    "name": "Atomic Rollback Demo",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/workspaces/{{workspace_id}}/members/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "workspaces",
+                                "{{workspace_id}}",
+                                "members",
+                                ""
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"user\": \"{{user_id}}\",\n    \"role\": \"viewer\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
         {
-          "name": "Test Case Normalization",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": ""
-            }
-          },
-          "response": []
+            "name": "Tests",
+            "item": [
+                {
+                    "name": "Test Case Normalization",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/workspaces/{{workspace_id}}/summary/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "workspaces",
+                                "{{workspace_id}}",
+                                "summary",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://127.0.0.1:8000/api",
+            "type": "string"
+        },
+        {
+            "key": "user_id",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "test_user_id",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "workspace_id",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "document_id",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "tag_id",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "tag2_id",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "comment_id",
+            "value": "",
+            "type": "string"
+        }
+    ]
 }
