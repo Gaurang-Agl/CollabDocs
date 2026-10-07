@@ -1,4 +1,4 @@
-﻿# CollabDocs — Collaborative Document Platform
+# CollabDocs — Collaborative Document Platform
 
 A backend REST API for **CollabDocs**, a multi-tenant collaborative document platform built with **Django REST Framework (DRF)** and **PostgreSQL**. CollabDocs allows users to create workspaces, manage role-based members (Admin, Editor, Viewer), write version-controlled documents, leave threaded comments, categorize documents with tags, and track actions via automatic audit logging.
 
@@ -30,7 +30,7 @@ A backend REST API for **CollabDocs**, a multi-tenant collaborative document pla
 ## 🛠️ Tech Stack & Dependencies
 
 - **Framework:** Django 5.2.6 & Django REST Framework 3.16.1
-- **Database:** PostgreSQL (with `psycopg2-binary 2.9.10`)
+- **Database:** PostgreSQL (with `psycopg 3.3.6` / `psycopg-binary 3.3.6`)
 - **Configuration:** `python-decouple 3.8` (Environment variable isolation)
 - **API Client:** Postman
 
@@ -101,6 +101,17 @@ python manage.py migrate
 ```bash
 python manage.py test collaboration
 ```
+The test suite includes 31 comprehensive automated tests covering:
+- Atomic workspace creation and automatic owner ADMIN role assignment
+- Rollback verification upon integrity conflicts (409 Conflict)
+- Sequential document versioning (version 1, 2, ... N)
+- Signal-driven and transactional audit logging on Documents, Workspaces, and Members
+- Role-based permissions (Admin, Editor, Viewer, Non-member access controls)
+- Custom field validations (case-insensitive duplicate email/phone 409 handling, format validations, non-blank strings, inactive workspace guards)
+- Document immutability across workspaces (preventing cross-workspace document moving on update)
+- Advanced queries: `Q` object search (title/content), status filtering, and tag filtering
+- Aggregations (`documents_by_status`, workspace summary, document stats)
+
 
 ### 9. Start Development Server
 ```bash
@@ -146,8 +157,17 @@ The API will be live at `http://127.0.0.1:8000/api/`.
 The complete Postman collection is committed at the repository root:
 - [`postman_collection.json`](./postman_collection.json)
 
-**Authentication in Postman:**
-Endpoints requiring user identity use the header:
+**Authentication & Authorization Model:**
+In strict compliance with the assignment specification, user context and role-based permissions (ADMIN, EDITOR, VIEWER) are simulated using the request header:
 ```http
 X-User-ID: <User-UUID>
 ```
+This architecture intentionally avoids superfluous external JWT/session overhead while ensuring rigorous role enforcement:
+- Workspace owners automatically become `admin`.
+- Only `admin` members can add workspace members.
+- Only `admin` and `editor` members can create or update documents.
+- `viewer` members have read-only access to documents, versions, comments, and stats.
+- Non-members are rejected with `403 Forbidden`.
+
+The Postman collection is preconfigured with collection and environment variables (`{{base_url}}`, `{{user_id}}`, `{{workspace_id}}`, etc.) and automated test scripts to extract and propagate dynamic UUIDs seamlessly through the execution flow.
+

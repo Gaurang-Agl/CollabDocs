@@ -63,6 +63,29 @@ class UserViewSet(viewsets.ModelViewSet):
             status=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            with transaction.atomic():
+                user = serializer.save()
+        except IntegrityError:
+            return Response(
+                {
+                    "message": (
+                        "A user with this email or phone "
+                        "already exists."
+                    )
+                },
+                status=status.HTTP_409_CONFLICT,
+            )
+
+        return Response(
+            self.get_serializer(user).data,
+            status=status.HTTP_201_CREATED,
+        )
+
 
 # =========================================================
 # WORKSPACES
@@ -131,10 +154,22 @@ class WorkspaceViewSet(viewsets.ModelViewSet):
                     role=WorkspaceMember.Role.ADMIN,
                 )
 
-        except IntegrityError as exc:
-            raise PermissionDenied(
-                "Workspace creation failed because owner membership could not be created."
-            ) from exc
+                AuditLog.objects.create(
+                    actor=owner,
+                    action="created",
+                    model_name="Workspace",
+                    object_id=str(workspace.id),
+                )
+
+        except IntegrityError:
+            return Response(
+                {
+                    "message": (
+                        "Workspace creation failed due to conflict."
+                    )
+                },
+                status=status.HTTP_409_CONFLICT,
+            )
 
         output_serializer = self.get_serializer(
             workspace
@@ -269,6 +304,13 @@ class WorkspaceViewSet(viewsets.ModelViewSet):
 
                 member = serializer.save(
                     workspace=workspace
+                )
+
+                AuditLog.objects.create(
+                    actor=actor,
+                    action="created",
+                    model_name="WorkspaceMember",
+                    object_id=str(member.id),
                 )
 
         except IntegrityError:
@@ -886,8 +928,8 @@ class DocumentViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        for tag in tags:
-            tag.documents.add(document)
+        with transaction.atomic():
+            document.tags.add(*tags)
 
         return Response(
             {

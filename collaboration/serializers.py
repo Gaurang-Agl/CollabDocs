@@ -27,6 +27,10 @@ class UserSerializer(serializers.ModelSerializer):
             "id",
             "created_at",
         ]
+        extra_kwargs = {
+            "email": {"validators": []},
+            "phone": {"validators": []},
+        }
 
     def validate_email(self, value):
         value = value.strip().lower()
@@ -136,6 +140,8 @@ class WorkspaceSerializer(serializers.ModelSerializer):
 
 
 class DocumentSerializer(serializers.ModelSerializer):
+    tags = serializers.SerializerMethodField()
+
     class Meta:
         model = Document
         fields = [
@@ -145,11 +151,13 @@ class DocumentSerializer(serializers.ModelSerializer):
             "workspace",
             "created_by",
             "status",
+            "tags",
             "updated_at",
         ]
         read_only_fields = [
             "id",
             "created_by",
+            "tags",
             "updated_at",
         ]
 
@@ -164,12 +172,20 @@ class DocumentSerializer(serializers.ModelSerializer):
         return value
 
     def validate_workspace(self, value):
+        if self.instance and self.instance.workspace_id != value.id:
+            raise serializers.ValidationError(
+                "Cannot change the workspace of an existing document."
+            )
+
         if not value.is_active:
             raise serializers.ValidationError(
                 "Cannot create or update a document in an inactive workspace."
             )
 
         return value
+
+    def get_tags(self, obj):
+        return [t.name for t in obj.tags.all()]
 
 
 class DocumentVersionSerializer(serializers.ModelSerializer):
@@ -236,15 +252,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def get_replies(self, obj):
         if obj.parent is None:
-            children = (
-                obj.replies
-                .select_related(
-                    "document",
-                    "author",
-                    "parent",
-                )
-                .all()
-            )
+            children = obj.replies.all()
 
             return CommentSerializer(
                 children,
@@ -257,7 +265,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class TagSerializer(serializers.ModelSerializer):
     name = serializers.CharField(
-        max_length=100,
+        max_length=50,
         validators=[],
     )
 

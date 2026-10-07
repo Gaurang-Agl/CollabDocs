@@ -1,7 +1,7 @@
 {
     "info": {
         "_postman_id": "68ff5694-801d-438e-bebf-7c3ffff658ab",
-        "name": "New Collection",
+        "name": "CollabDocs API - Postman Collection",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
         "_exporter_id": "57563309"
     },
@@ -66,8 +66,11 @@
                             "script": {
                                 "type": "text/javascript",
                                 "exec": [
-                                    "const response = pm.response.json();\r\n\r\npm.environment.set(\"test_user_id\", response.id);\r\n\r\nconsole.log(\"test_user_id\", response.id);",
-                                    "const response = pm.response.json();\r\n\r\npm.collectionVariables.set(\"test_user_id\", response.id);\r\n\r\nconsole.log(\"test_user_id\", response.id);"
+                                    "const response = pm.response.json();",
+                                    "if (response && response.id) {",
+                                    "    pm.environment.set(\"test_user_id\", response.id);",
+                                    "    pm.collectionVariables.set(\"test_user_id\", response.id);",
+                                    "}"
                                 ]
                             }
                         }
@@ -90,24 +93,6 @@
                                 }
                             }
                         },
-                        "url": {
-                            "raw": "{{base_url}}/users/",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "users",
-                                ""
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "List all Users",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
                         "url": {
                             "raw": "{{base_url}}/users/",
                             "host": [
@@ -205,8 +190,11 @@
                             "script": {
                                 "type": "text/javascript",
                                 "exec": [
-                                    "const response = pm.response.json();\r\n\r\npm.environment.set(\"workspace_id\", response.id);\r\n\r\nconsole.log(\"workspace_id:\", response.id);",
-                                    "const response = pm.response.json();\r\n\r\npm.collectionVariables.set(\"workspace_id\", response.id);\r\n\r\nconsole.log(\"workspace_id:\", response.id);"
+                                    "const response = pm.response.json();",
+                                    "if (response && response.id) {",
+                                    "    pm.environment.set(\"workspace_id\", response.id);",
+                                    "    pm.collectionVariables.set(\"workspace_id\", response.id);",
+                                    "}"
                                 ]
                             }
                         }
@@ -234,30 +222,6 @@
                                 }
                             }
                         },
-                        "url": {
-                            "raw": "{{base_url}}/workspaces/",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "workspaces",
-                                ""
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "List Workspaces",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "X-User-ID",
-                                "value": "{{user_id}}",
-                                "type": "text"
-                            }
-                        ],
                         "url": {
                             "raw": "{{base_url}}/workspaces/",
                             "host": [
@@ -305,8 +269,11 @@
                             "script": {
                                 "type": "text/javascript",
                                 "exec": [
-                                    "const response = pm.response.json();\r\n\r\npm.environment.set(\"member_id\", response.id);\r\n\r\nconsole.log(\"member_id:\", response.id);",
-                                    "const response = pm.response.json();\r\n\r\npm.collectionVariables.set(\"member_id\", response.id);\r\n\r\nconsole.log(\"member_id:\", response.id);"
+                                    "const response = pm.response.json();",
+                                    "if (response && response.id) {",
+                                    "    pm.environment.set(\"member_id\", response.id);",
+                                    "    pm.collectionVariables.set(\"member_id\", response.id);",
+                                    "}"
                                 ]
                             }
                         }
@@ -412,8 +379,11 @@
                             "script": {
                                 "type": "text/javascript",
                                 "exec": [
-                                    "const response = pm.response.json();\r\n\r\npm.environment.set(\"document_id\", response.id);\r\n\r\nconsole.log(\"document_id:\", response.id);",
-                                    "const response = pm.response.json();\r\n\r\npm.collectionVariables.set(\"document_id\", response.id);\r\n\r\nconsole.log(\"document_id:\", response.id);"
+                                    "const response = pm.response.json();",
+                                    "if (response && response.id) {",
+                                    "    pm.environment.set(\"document_id\", response.id);",
+                                    "    pm.collectionVariables.set(\"document_id\", response.id);",
+                                    "}"
                                 ]
                             }
                         }
@@ -832,8 +802,11 @@
                             "script": {
                                 "type": "text/javascript",
                                 "exec": [
-                                    "const response = pm.response.json();\r\n\r\npm.environment.set(\"comment_id\", response.id);\r\n\r\nconsole.log(\"comment_id\", response.id);",
-                                    "const response = pm.response.json();\r\n\r\npm.collectionVariables.set(\"comment_id\", response.id);\r\n\r\nconsole.log(\"comment_id\", response.id);"
+                                    "const response = pm.response.json();",
+                                    "if (response && response.id) {",
+                                    "    pm.environment.set(\"comment_id\", response.id);",
+                                    "    pm.collectionVariables.set(\"comment_id\", response.id);",
+                                    "}"
                                 ]
                             }
                         }
@@ -910,8 +883,11 @@
                             "script": {
                                 "type": "text/javascript",
                                 "exec": [
-                                    "const response = pm.response.json();\r\n\r\npm.environment.set(\"reply_id\", response.id);\r\n\r\nconsole.log(\"reply_id\", response.id);",
-                                    "const response = pm.response.json();\r\n\r\npm.collectionVariables.set(\"reply_id\", response.id);\r\n\r\nconsole.log(\"reply_id\", response.id);"
+                                    "const response = pm.response.json();",
+                                    "if (response && response.id) {",
+                                    "    pm.environment.set(\"reply_id\", response.id);",
+                                    "    pm.collectionVariables.set(\"reply_id\", response.id);",
+                                    "}"
                                 ]
                             }
                         }
@@ -997,8 +973,11 @@
                             "script": {
                                 "type": "text/javascript",
                                 "exec": [
-                                    "const response = pm.response.json();\r\n\r\npm.environment.set(\"tag_id\", response.id);\r\n\r\nconsole.log(\"tag_id:\", response.id);",
-                                    "const response = pm.response.json();\r\n\r\npm.collectionVariables.set(\"tag_id\", response.id);\r\n\r\nconsole.log(\"tag_id:\", response.id);"
+                                    "const response = pm.response.json();",
+                                    "if (response && response.id) {",
+                                    "    pm.environment.set(\"tag_id\", response.id);",
+                                    "    pm.collectionVariables.set(\"tag_id\", response.id);",
+                                    "}"
                                 ]
                             }
                         }
@@ -1019,7 +998,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\r\n    \"name\": \"collabdocs-demo-20261006\"\r\n}",
+                            "raw": "{\r\n    \"name\": \"project-tag-001\"\r\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1047,8 +1026,11 @@
                             "script": {
                                 "type": "text/javascript",
                                 "exec": [
-                                    "const response = pm.response.json();\r\n\r\npm.environment.set(\"tag2_id\", response.id);\r\n\r\nconsole.log(\"tag2_id:\", response.id);",
-                                    "const response = pm.response.json();\r\n\r\npm.collectionVariables.set(\"tag2_id\", response.id);\r\n\r\nconsole.log(\"tag2_id:\", response.id);"
+                                    "const response = pm.response.json();",
+                                    "if (response && response.id) {",
+                                    "    pm.environment.set(\"tag2_id\", response.id);",
+                                    "    pm.collectionVariables.set(\"tag2_id\", response.id);",
+                                    "}"
                                 ]
                             }
                         }
@@ -1069,7 +1051,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\r\n    \"name\": \"postman-testing\"\r\n}",
+                            "raw": "{\r\n    \"name\": \"project-tag-002\"\r\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1090,7 +1072,7 @@
                     "response": []
                 },
                 {
-                    "name": "Duplicate Tag",
+                    "name": "Duplicate Tag - Expected 409",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -1107,7 +1089,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\r\n    \"name\": \"postman-testing\"\r\n}",
+                            "raw": "{\r\n    \"name\": \"project-tag-002\"\r\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1173,12 +1155,11 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/api/users/00000000-0000-0000-0000-000000000000/",
+                            "raw": "{{base_url}}/users/00000000-0000-0000-0000-000000000000/",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
-                                "api",
                                 "users",
                                 "00000000-0000-0000-0000-000000000000",
                                 ""
@@ -1239,12 +1220,11 @@
                             }
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/documents/",
+                            "raw": "{{base_url}}/documents/",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
-                                "api",
                                 "documents",
                                 ""
                             ]
