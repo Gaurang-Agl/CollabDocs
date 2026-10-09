@@ -125,19 +125,23 @@ The API will be live at `http://127.0.0.1:8000/api/`.
 
 ### 👤 Users
 - `POST /api/users/` — Create user
+- `GET /api/users/` — List users (supports optional `email` and `search` query parameters)
 - `GET /api/users/{id}/` — Retrieve user details
 
 ### 🏢 Workspaces
 - `POST /api/workspaces/` — Create workspace (owner automatically added as Admin in single transaction)
+- `GET /api/workspaces/` — List workspaces (filtered by member if `X-User-ID` is provided; supports `owner` and `search` filters)
 - `GET /api/workspaces/{id}/` — Get workspace details (annotated with member & document counts)
 - `POST /api/workspaces/{id}/members/` — Add member with role (`admin`, `editor`, `viewer`)
+- `PATCH /api/workspaces/{id}/members/` — Update member role (`admin`, `editor`, `viewer`)
 - `GET /api/workspaces/{id}/members/` — List members (supports filters: `roles`, `joined_after`, `joined_before`, `email`)
 - `GET /api/workspaces/{id}/summary/` — Aggregated workspace summary (total members, total documents, status breakdown)
 
 ### 📄 Documents
 - `POST /api/documents/` — Create document (+ auto-generates version 1 and triggers audit log)
-- `PUT /api/documents/{id}/` — Update document (+ auto-generates version N+1 and triggers audit log)
 - `GET /api/documents/` — List documents (supports filtering: `workspace`, `status`, `tags`, `updated_after`, `updated_before`, and `search` via `Q` OR logic)
+- `GET /api/documents/{id}/` — Retrieve document details
+- `PUT /api/documents/{id}/` — Update document (+ auto-generates version N+1 and triggers audit log)
 - `GET /api/documents/{id}/versions/` — List document version history
 - `GET /api/documents/{id}/stats/` — Aggregated document stats (version count, comment count, unique contributors)
 - `POST /api/documents/{id}/tags/` — Attach tags to document
@@ -145,10 +149,14 @@ The API will be live at `http://127.0.0.1:8000/api/`.
 ### 💬 Comments
 - `POST /api/comments/` — Add comment or nested reply (supports threaded replies)
 - `GET /api/comments/?document={id}` — List threaded comments for a document
+- `GET /api/comments/{id}/` — Retrieve comment details
 
 ### 🏷️ Tags & 📜 Audit Logs
 - `POST /api/tags/` — Create new tag
+- `GET /api/tags/` — List all tags
+- `GET /api/tags/{id}/` — Retrieve tag details
 - `GET /api/audit-logs/` — List audit history (supports filters: `actions`, `model_name`, `timestamp_after`, `timestamp_before`)
+- `GET /api/audit-logs/{id}/` — Retrieve audit log details
 
 ---
 

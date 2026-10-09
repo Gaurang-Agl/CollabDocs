@@ -107,6 +107,24 @@
                     "response": []
                 },
                 {
+                    "name": "List Users",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/users/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "users",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
                     "name": "Get First User",
                     "request": {
                         "method": "GET",
@@ -236,6 +254,30 @@
                     "response": []
                 },
                 {
+                    "name": "List Workspaces",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/workspaces/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "workspaces",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
                     "name": "Workspace Members",
                     "request": {
                         "method": "GET",
@@ -295,6 +337,46 @@
                         "body": {
                             "mode": "raw",
                             "raw": "{\r\n    \"user\": \"{{test_user_id}}\",\r\n    \"role\": \"editor\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/workspaces/{{workspace_id}}/members/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "workspaces",
+                                "{{workspace_id}}",
+                                "members",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Member Role",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"user\": \"{{test_user_id}}\",\n    \"role\": \"viewer\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -460,14 +542,13 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/documents/{{document_id}}/versions/",
+                            "raw": "{{base_url}}/documents/{{document_id}}/",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "documents",
                                 "{{document_id}}",
-                                "versions",
                                 ""
                             ]
                         }
@@ -749,45 +830,6 @@
                         }
                     },
                     "response": []
-                },
-                {
-                    "name": "Document-Tag",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "X-User-ID",
-                                "value": "{{user_id}}"
-                            },
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\r\n    \"tag_ids\": [\r\n        \"{{tag_id}}\"\r\n    ]\r\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{base_url}}/documents/{{document_id}}/tags/",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "documents",
-                                "{{document_id}}",
-                                "tags",
-                                ""
-                            ]
-                        }
-                    },
-                    "response": []
                 }
             ]
         },
@@ -816,7 +858,7 @@
                         "header": [
                             {
                                 "key": "X-User-ID",
-                                "value": " {{user_id}}"
+                                "value": "{{user_id}}"
                             },
                             {
                                 "key": "Content-Type",
@@ -870,6 +912,30 @@
                                     "key": "document",
                                     "value": "{{document_id}}"
                                 }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Comment",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/comments/{{comment_id}}/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "comments",
+                                "{{comment_id}}",
+                                ""
                             ]
                         }
                     },
@@ -1108,6 +1174,43 @@
                         }
                     },
                     "response": []
+                },
+                {
+                    "name": "List Tags",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/tags/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "tags",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Tag",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/tags/{{tag_id}}/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "tags",
+                                "{{tag_id}}",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
                 }
             ]
         },
@@ -1132,6 +1235,31 @@
                             ],
                             "path": [
                                 "audit-logs",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Audit Log",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-ID",
+                                "value": "{{user_id}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/audit-logs/{{audit_log_id}}/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "audit-logs",
+                                "{{audit_log_id}}",
                                 ""
                             ]
                         }
@@ -1268,37 +1396,6 @@
                                     "language": "json"
                                 }
                             }
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "Tests",
-            "item": [
-                {
-                    "name": "Test Case Normalization",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "X-User-ID",
-                                "value": "{{user_id}}",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/workspaces/{{workspace_id}}/summary/",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "workspaces",
-                                "{{workspace_id}}",
-                                "summary",
-                                ""
-                            ]
                         }
                     },
                     "response": []

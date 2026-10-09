@@ -879,3 +879,234 @@ class CollabDocsAPITests(TestCase):
                 action="created",
             ).exists()
         )
+
+    def test_list_users(self):
+        response = self.client.get("/api/users/")
+        self.assertEqual(response.status_code, 200)
+        self.assertGreaterEqual(len(response.data), 2)
+        user_ids = [u["id"] for u in response.data]
+        self.assertIn(str(self.user1.id), user_ids)
+        self.assertIn(str(self.user2.id), user_ids)
+
+    def test_list_users_filtering(self):
+        # Email filter
+        response = self.client.get(
+            f"/api/users/?email={self.user1.email}"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["id"], str(self.user1.id))
+
+        # Search filter
+        response = self.client.get("/api/users/?search=Rahul")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["id"], str(self.user2.id))
+
+    def test_list_workspaces(self):
+        workspace = self.create_workspace()
+        # With X-User-ID header (set in setUp to user1)
+        response = self.client.get("/api/workspaces/")
+        self.assertEqual(response.status_code, 200)
+        workspace_ids = [w["id"] for w in response.data]
+        self.assertIn(str(workspace.id), workspace_ids)
+
+    def test_list_workspaces_member_filter(self):
+        workspace = self.create_workspace()
+        # user2 is not a member of workspace yet
+        client2 = APIClient()
+        client2.credentials(HTTP_X_USER_ID=str(self.user2.id))
+        response = client2.get("/api/workspaces/")
+        self.assertEqual(response.status_code, 200)
+        workspace_ids = [w["id"] for w in response.data]
+        self.assertNotIn(str(workspace.id), workspace_ids)
+
+        # Without X-User-ID header returns all workspaces
+        anon_client = APIClient()
+        response = anon_client.get("/api/workspaces/")
+        self.assertEqual(response.status_code, 200)
+        workspace_ids = [w["id"] for w in response.data]
+        self.assertIn(str(workspace.id), workspace_ids)
+
+    def test_retrieve_document(self):
+        workspace = self.create_workspace()
+        doc_resp = self.client.post(
+            "/api/documents/",
+            {
+                "title": "Doc for Retrieval",
+                "content": "Content here",
+                "workspace": str(workspace.id),
+                "status": "draft",
+            },
+            format="json",
+        )
+        self.assertEqual(doc_resp.status_code, 201)
+        doc_id = doc_resp.data["id"]
+
+        # Retrieve document
+        response = self.client.get(f"/api/documents/{doc_id}/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], doc_id)
+        self.assertEqual(response.data["title"], "Doc for Retrieval")
+
+    def test_retrieve_comment(self):
+        workspace = self.create_workspace()
+        doc_resp = self.client.post(
+            "/api/documents/",
+            {
+                "title": "Doc for Comment",
+                "content": "Content",
+                "workspace": str(workspace.id),
+                "status": "draft",
+            },
+            format="json",
+        )
+        doc_id = doc_resp.data["id"]
+
+        comment_resp = self.client.post(
+            "/api/comments/",
+            {
+                "document": doc_id,
+                "content": "Nice document!",
+            },
+            format="json",
+        )
+        self.assertEqual(comment_resp.status_code, 201)
+        comment_id = comment_resp.data["id"]
+
+        response = self.client.get(f"/api/comments/{comment_id}/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], comment_id)
+        self.assertEqual(response.data["content"], "Nice document!")
+
+    def test_list_and_retrieve_tags(self):
+        tag_resp = self.client.post(
+            "/api/tags/",
+            {"name": "backend-test"},
+            format="json",
+        )
+        self.assertEqual(tag_resp.status_code, 201)
+        tag_id = tag_resp.data["id"]
+
+        # List tags
+        list_resp = self.client.get("/api/tags/")
+        self.assertEqual(list_resp.status_code, 200)
+        tag_ids = [t["id"] for t in list_resp.data]
+        self.assertIn(tag_id, tag_ids)
+
+        # Retrieve tag
+        get_resp = self.client.get(f"/api/tags/{tag_id}/")
+        self.assertEqual(get_resp.status_code, 200)
+        self.assertEqual(get_resp.data["name"], "backend-test")
+
+    def test_retrieve_audit_log(self):
+        workspace = self.create_workspace()
+        log = AuditLog.objects.filter(
+            model_name="Workspace",
+            object_id=str(workspace.id),
+        ).first()
+        self.assertIsNotNone(log)
+
+        response = self.client.get(f"/api/audit-logs/{log.id}/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(log.id))
+
+    def test_update_member_role(self):
+        workspace = self.create_workspace()
+        # Add user2 as editor
+        self.client.post(
+            f"/api/workspaces/{workspace.id}/members/",
+            {"user": str(self.user2.id), "role": "editor"},
+            format="json",
+        )
+
+        # Update user2 to viewer
+        update_resp = self.client.patch(
+            f"/api/workspaces/{workspace.id}/members/",
+            {"user": str(self.user2.id), "role": "viewer"},
+            format="json",
+        )
+        self.assertEqual(update_resp.status_code, 200)
+        self.assertEqual(update_resp.data["role"], "viewer")
+
+        # Verify viewer cannot create document
+        client2 = APIClient()
+        client2.credentials(HTTP_X_USER_ID=str(self.user2.id))
+        doc_resp = client2.post(
+            "/api/documents/",
+            {
+                "title": "Unauthorized Doc",
+                "content": "Fail",
+                "workspace": str(workspace.id),
+                "status": "draft",
+            },
+            format="json",
+        )
+        self.assertEqual(doc_resp.status_code, 403)
+        self.assertEqual(
+            doc_resp.data["message"],
+            "User does not have the required workspace role.",
+        )
+
+    def test_phone_max_length_validation(self):
+        response = self.client.post(
+            "/api/users/",
+            {
+                "first_name": "Test",
+                "last_name": "LongPhone",
+                "email": "longphone@example.com",
+                "phone": "1234567890123456",  # 16 digits > 15
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("phone", response.data["errors"])
+
+    def test_user_update_and_delete_not_allowed(self):
+        # PUT /api/users/{id}/ should return 405
+        put_resp = self.client.put(
+            f"/api/users/{self.user1.id}/",
+            {"first_name": "Hacked"},
+            format="json",
+        )
+        self.assertEqual(put_resp.status_code, 405)
+
+        # DELETE /api/users/{id}/ should return 405
+        del_resp = self.client.delete(f"/api/users/{self.user1.id}/")
+        self.assertEqual(del_resp.status_code, 405)
+
+    def test_workspace_update_requires_admin(self):
+        workspace = self.create_workspace()
+
+        # Non-admin / unauthenticated cannot update workspace
+        unauth_client = APIClient()
+        unauth_resp = unauth_client.put(
+            f"/api/workspaces/{workspace.id}/",
+            {"name": "Renamed Workspace", "owner": str(self.user1.id)},
+            format="json",
+        )
+        self.assertEqual(unauth_resp.status_code, 403)
+
+        # Admin (owner) can update workspace
+        admin_resp = self.client.put(
+            f"/api/workspaces/{workspace.id}/",
+            {"name": "Renamed Workspace", "owner": str(self.user1.id)},
+            format="json",
+        )
+        self.assertEqual(admin_resp.status_code, 200)
+        self.assertEqual(admin_resp.data["name"], "Renamed Workspace")
+
+    def test_workspace_owner_cannot_be_demoted(self):
+        workspace = self.create_workspace()
+
+        # Try to demote owner (user1) to viewer
+        demote_resp = self.client.patch(
+            f"/api/workspaces/{workspace.id}/members/",
+            {"user": str(self.user1.id), "role": "viewer"},
+            format="json",
+        )
+        self.assertEqual(demote_resp.status_code, 400)
+        self.assertEqual(
+            demote_resp.data["message"],
+            "Workspace owner role cannot be demoted.",
+        )

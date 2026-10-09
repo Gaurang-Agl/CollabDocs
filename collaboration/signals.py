@@ -25,8 +25,10 @@ def document_audit_log(
         else "updated"
     )
 
+    actor = getattr(instance, "_actor", instance.created_by)
+
     AuditLog.objects.create(
-        actor=instance.created_by,
+        actor=actor,
         action=action,
         model_name="Document",
         object_id=str(instance.id),

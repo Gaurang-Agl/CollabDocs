@@ -46,22 +46,35 @@ from .serializers import (
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by("-created_at")
     serializer_class = UserSerializer
-
-    # Assignment only requires:
-    # POST /api/users/
-    # GET  /api/users/{id}/
     http_method_names = ["get", "post"]
 
+    def get_queryset(self):
+        queryset = User.objects.all().order_by("-created_at")
+
+        email = self.request.query_params.get("email")
+        if email:
+            queryset = queryset.filter(email__iexact=email.strip().lower())
+
+        search = self.request.query_params.get("search")
+        if search:
+            queryset = queryset.filter(
+                Q(first_name__icontains=search)
+                | Q(last_name__icontains=search)
+                | Q(email__icontains=search)
+            )
+
+        return queryset
+
     def list(self, request, *args, **kwargs):
-        return Response(
-            {
-                "message": (
-                    "User list endpoint is not part "
-                    "of the required API."
-                )
-            },
-            status=status.HTTP_405_METHOD_NOT_ALLOWED,
-        )
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -98,7 +111,7 @@ class WorkspaceViewSet(viewsets.ModelViewSet):
     # POST /api/workspaces/
     # GET  /api/workspaces/{id}/
     # custom members + summary
-    http_method_names = ["get", "post"]
+    http_method_names = ["get", "post", "put", "patch"]
 
     def get_queryset(self):
         return (
@@ -117,15 +130,32 @@ class WorkspaceViewSet(viewsets.ModelViewSet):
         )
 
     def list(self, request, *args, **kwargs):
-        return Response(
-            {
-                "message": (
-                    "Workspace list endpoint is not part "
-                    "of the required API."
-                )
-            },
-            status=status.HTTP_405_METHOD_NOT_ALLOWED,
-        )
+        queryset = self.filter_queryset(self.get_queryset())
+
+        if request.headers.get("X-User-ID"):
+            actor = get_actor(request)
+            member_workspace_ids = (
+                WorkspaceMember.objects
+                .filter(user=actor)
+                .values_list("workspace_id", flat=True)
+            )
+            queryset = queryset.filter(id__in=member_workspace_ids)
+
+        owner = request.query_params.get("owner")
+        if owner:
+            queryset = queryset.filter(owner_id=owner)
+
+        search = request.query_params.get("search")
+        if search:
+            queryset = queryset.filter(name__icontains=search)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(
@@ -202,13 +232,63 @@ class WorkspaceViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
+    def update(
+        self,
+        request,
+        *args,
+        **kwargs,
+    ):
+        workspace = self.get_object()
+
+        actor, _ = require_workspace_role(
+            request,
+            workspace,
+            {WorkspaceMember.Role.ADMIN},
+        )
+
+        partial = kwargs.pop("partial", False)
+        serializer = self.get_serializer(
+            workspace,
+            data=request.data,
+            partial=partial,
+        )
+        serializer.is_valid(raise_exception=True)
+
+        if (
+            "owner" in serializer.validated_data
+            and serializer.validated_data["owner"] != workspace.owner
+        ):
+            raise PermissionDenied(
+                "Workspace ownership cannot be transferred."
+            )
+
+        updated_workspace = serializer.save()
+
+        AuditLog.objects.create(
+            actor=actor,
+            action="updated",
+            model_name="Workspace",
+            object_id=str(updated_workspace.id),
+        )
+
+        return Response(self.get_serializer(updated_workspace).data)
+
+    def partial_update(
+        self,
+        request,
+        *args,
+        **kwargs,
+    ):
+        kwargs["partial"] = True
+        return self.update(request, *args, **kwargs)
+
     # -----------------------------------------------------
     # MEMBERS
     # -----------------------------------------------------
 
     @action(
         detail=True,
-        methods=["get", "post"],
+        methods=["get", "post", "put", "patch"],
         url_path="members",
     )
     def members(self, request, pk=None):
@@ -281,6 +361,69 @@ class WorkspaceViewSet(viewsets.ModelViewSet):
             )
 
             return Response(serializer.data)
+
+        # PUT/PATCH /members/ — Update Member Role
+        if request.method in ["PUT", "PATCH"]:
+            actor, _ = require_workspace_role(
+                request,
+                workspace,
+                {WorkspaceMember.Role.ADMIN},
+            )
+
+            user_id = request.data.get("user") or request.data.get("user_id")
+            new_role = request.data.get("role")
+
+            if not user_id:
+                return Response(
+                    {"message": "User ID ('user') is required."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            if new_role not in WorkspaceMember.Role.values:
+                return Response(
+                    {
+                        "message": (
+                            f"Invalid role. Must be one of: "
+                            f"{list(WorkspaceMember.Role.values)}"
+                        )
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            try:
+                member = WorkspaceMember.objects.get(
+                    workspace=workspace,
+                    user_id=user_id,
+                )
+            except WorkspaceMember.DoesNotExist:
+                return Response(
+                    {"message": "User is not a member of this workspace."},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
+            if (
+                member.user_id == workspace.owner_id
+                and new_role != WorkspaceMember.Role.ADMIN
+            ):
+                return Response(
+                    {"message": "Workspace owner role cannot be demoted."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            member.role = new_role
+            member.save(update_fields=["role"])
+
+            AuditLog.objects.create(
+                actor=actor,
+                action="updated",
+                model_name="WorkspaceMember",
+                object_id=str(member.id),
+            )
+
+            return Response(
+                WorkspaceMemberSerializer(member).data,
+                status=status.HTTP_200_OK,
+            )
 
         # POST /members/
         actor, membership = require_workspace_role(
@@ -564,15 +707,20 @@ class DocumentViewSet(viewsets.ModelViewSet):
         *args,
         **kwargs,
     ):
-        return Response(
+        document = self.get_object()
+
+        require_workspace_role(
+            request,
+            document.workspace,
             {
-                "message": (
-                    "Document detail endpoint is not part "
-                    "of the required 17 APIs."
-                )
+                WorkspaceMember.Role.ADMIN,
+                WorkspaceMember.Role.EDITOR,
+                WorkspaceMember.Role.VIEWER,
             },
-            status=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
+
+        serializer = self.get_serializer(document)
+        return Response(serializer.data)
 
     # -----------------------------------------------------
     # CREATE DOCUMENT + VERSION
@@ -683,7 +831,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
         )
 
         with transaction.atomic():
-
+            serializer.instance._actor = actor
             document = serializer.save()
 
             version_number = (
@@ -960,21 +1108,27 @@ class CommentViewSet(viewsets.ModelViewSet):
         *args,
         **kwargs,
     ):
-        return Response(
+        comment = self.get_object()
+
+        require_workspace_role(
+            request,
+            comment.document.workspace,
             {
-                "message": (
-                    "Comment detail endpoint is not part "
-                    "of the required 17 APIs."
-                )
+                WorkspaceMember.Role.ADMIN,
+                WorkspaceMember.Role.EDITOR,
+                WorkspaceMember.Role.VIEWER,
             },
-            status=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
+
+        serializer = self.get_serializer(comment)
+        return Response(serializer.data)
 
     def get_queryset(self):
 
         queryset = (
             Comment.objects
             .select_related(
+                "document__workspace",
                 "document",
                 "author",
                 "parent",
@@ -1106,7 +1260,7 @@ class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all().order_by("name")
     serializer_class = TagSerializer
 
-    http_method_names = ["post"]
+    http_method_names = ["get", "post"]
 
     def create(
         self,
@@ -1157,15 +1311,25 @@ class AuditLogViewSet(viewsets.ModelViewSet):
         *args,
         **kwargs,
     ):
-        return Response(
-            {
-                "message": (
-                    "Audit log detail endpoint is not part "
-                    "of the required 17 APIs."
-                )
-            },
-            status=status.HTTP_405_METHOD_NOT_ALLOWED,
+        actor = get_actor(request)
+
+        is_admin = (
+            WorkspaceMember.objects
+            .filter(
+                user=actor,
+                role=WorkspaceMember.Role.ADMIN,
+            )
+            .exists()
         )
+
+        if not is_admin:
+            raise PermissionDenied(
+                "Only workspace administrators can view audit logs."
+            )
+
+        audit_log = self.get_object()
+        serializer = self.get_serializer(audit_log)
+        return Response(serializer.data)
 
     def get_queryset(self):
 

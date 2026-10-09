@@ -55,6 +55,11 @@ class UserSerializer(serializers.ModelSerializer):
                 "Phone must contain at least 7 digits."
             )
 
+        if len(value) > 15:
+            raise serializers.ValidationError(
+                "Phone must contain at most 15 digits."
+            )
+
         return value
 
 
