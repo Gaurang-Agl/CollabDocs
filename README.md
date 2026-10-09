@@ -5,7 +5,7 @@ A backend REST API for **CollabDocs**, a multi-tenant collaborative document pla
 ---
 
 ## 📽️ Demo Video
-- **Video Walkthrough Link:** [Add your Loom or Google Drive link here]
+- **Video Walkthrough Link:** [https://drive.google.com/file/d/1OPcEQpaPBGXgQvdNdSCg0zWijOxu4tgb/view?usp=sharing]
 - **Duration:** 5–10 minutes
 - **Key demonstrations shown:**
   1. Atomic transaction rollback on failure (409 Conflict duplicate member handling)
